@@ -1,0 +1,8 @@
+TRAINSET_VERSION: ${self:custom.${self:custom.stage}.TRAINSET_VERSION}
+VALIDSET_VERSION: ${self:custom.${self:custom.stage}.VALIDSET_VERSION}
+INSPECTOR_GADGET_URL: ${self:custom.${self:custom.stage}.INSPECTOR_GADGET_URL}
+SENTRY_URL: ${self:custom.${self:custom.stage}.SENTRY_URL}
+DB: ${self:custom.${self:custom.stage}.DB}
+MONGO_USER: ${self:custom.${self:custom.stage}.MONGO_USER}
+MONGO_PASSWORD: ${self:custom.${self:custom.stage}.MONGO_PASSWORD}
+KAFKA_URL: ${self:custom.${self:custom.stage}.KAFKA_URL}
