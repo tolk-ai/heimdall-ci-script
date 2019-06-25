@@ -1,0 +1,13 @@
+{
+  "name": "heimdall-ci-script",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/thechatbotfactory/heimdall-ci-script.git",
+  "author": "Alexandre CONTASSOT <alexandre.contassot@thechatbotfactory.com>",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^8.0.1",
+    "ramda": "^0.26.1",
+    "yaml": "^1.6.0"
+  }
+}
