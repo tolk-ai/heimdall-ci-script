@@ -1,0 +1,20 @@
+service: MODULE_NAME-node
+
+provider:
+  name: kubeless
+  runtime: nodejs8
+  namespace: kubeless
+  environment:
+
+package:
+  excludeDevDependencies: true
+  exclude:
+    - test/**
+    - node_modules/**
+
+functions:
+
+custom:
+
+plugins:
+  - serverless-kubeless
