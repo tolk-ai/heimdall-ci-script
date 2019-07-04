@@ -28,7 +28,7 @@ const noModule = ['node_modules', '.git', '.idea', '.scripts-and-ci'];
 
 const getFunction = R.curry((moduleName, functionName) => ({
   [functionName]: {
-    handler: `${moduleName}.${functionName}`,
+    handler: `${moduleName}/${moduleName}.${functionName}`,
     events: [{http: `POST ${functionName}`}]
   }
 }));
