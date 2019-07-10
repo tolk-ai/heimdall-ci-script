@@ -4,7 +4,6 @@ provider:
   name: kubeless
   runtime: nodejs8
   namespace: kubeless
-  environment:
 
 package:
   excludeDevDependencies: true
@@ -13,8 +12,6 @@ package:
     - node_modules/**
 
 functions:
-
-custom:
 
 plugins:
   - serverless-kubeless
