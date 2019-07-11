@@ -1,4 +1,5 @@
 const R = require('ramda');
+const kebabCase = require('just-kebab-case');
 const {readJson, readYaml, writeYaml} = require('./lib/file');
 
 const getDirectory = index =>
@@ -8,7 +9,7 @@ const getDirectory = index =>
   )(process.cwd());
 
 const getFunction = R.curry((moduleName, functionName) => ({
-  [functionName]: {handler: `${moduleName}.${functionName}`}
+  [kebabCase(functionName)]: {handler: `${moduleName}.${functionName}`}
 }));
 
 const getFunctions = moduleName =>
