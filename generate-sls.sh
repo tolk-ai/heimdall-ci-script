@@ -28,6 +28,7 @@ generate_all_() {
   do
       generate_ ${i}
   done
+  yarn run generate-sls
 }
 
 if [[ -z ${MODULE_} ]]
