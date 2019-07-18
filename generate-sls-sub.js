@@ -1,5 +1,7 @@
 const R = require('ramda');
 const kebabCase = require('just-kebab-case');
+const {renameProp} = require('bobda');
+
 const {readJson, readYaml, writeYaml} = require('./lib/file');
 
 const getDirectory = index =>
@@ -8,13 +10,16 @@ const getDirectory = index =>
     R.nth(index)
   )(process.cwd());
 
-const getFunction = R.curry((moduleName, functionName) => ({
-  [kebabCase(functionName)]: {handler: `${moduleName}.${functionName}`}
+const getFunction = R.curry((moduleName, slsEnv, functionName) => ({
+  [kebabCase(functionName)]: {
+    handler: `${moduleName}.${functionName}`,
+    environment: slsEnv
+  }
 }));
 
-const getFunctions = moduleName =>
+const getFunctions = (moduleName, slsEnv) =>
   R.pipe(
-    R.map(getFunction(moduleName)),
+    R.map(getFunction(moduleName, slsEnv)),
     R.mergeAll
   );
 
@@ -22,15 +27,54 @@ const currentDirectory = getDirectory(-1);
 const parentDirectory = getDirectory(-2);
 const currentPath = process.cwd();
 
-const getFunctionsExposed = R.pipe(
-  R.unapply(R.append('package.json')),
-  R.join('/'),
-  readJson,
-  R.prop('exposed-functions'),
-  getFunctions(currentDirectory)
+const getKeyInPackageJsonIn = key =>
+  R.pipe(
+    R.unapply(R.append('package.json')),
+    R.join('/'),
+    readJson,
+    R.prop(key)
+  );
+
+const getFunctionsExposed = slsEnv =>
+  R.pipe(
+    getKeyInPackageJsonIn('exposed-functions'),
+    getFunctions(currentDirectory, slsEnv)
+  );
+
+const adjustMongoPassword = R.pipe(
+  R.split('#'),
+  R.zipObj(['name', 'key']),
+  R.objOf('secretKeyRef')
 );
 
-const functionsExposed = getFunctionsExposed(currentPath);
+const getEnv = R.pipe(
+  R.toPairs,
+  R.map(
+    R.pipe(
+      R.zipObj(['name', 'value']),
+      R.when(
+        R.propEq('name', 'MONGO_PASSWORD'),
+        R.pipe(
+          R.over(R.lensProp('value'), adjustMongoPassword),
+          renameProp('value', 'valueFrom')
+        )
+      )
+    )
+  ),
+  R.tap(x => {
+    console.log('x:');
+    console.log(JSON.stringify(x, null, 2));
+    console.log();
+  })
+);
+
+const getSlsEnv = R.pipe(
+  getKeyInPackageJsonIn('sls-env'),
+  getEnv
+);
+
+const slsEnv = getSlsEnv(currentPath);
+const functionsExposed = getFunctionsExposed(slsEnv)(currentPath);
 
 const generateSlsYaml = pathOut =>
   R.pipe(
