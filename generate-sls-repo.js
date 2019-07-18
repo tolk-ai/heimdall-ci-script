@@ -1,5 +1,6 @@
 const R = require('ramda');
 const {listDir, readJson, readYaml, writeYaml} = require('./lib/file');
+const kebabCase = require('just-kebab-case');
 const {
   getCustom,
   getEnvironment,
@@ -27,9 +28,9 @@ const getPackage = R.curry((path, moduleName) =>
 const noModule = ['node_modules', '.git', '.idea', '.scripts-and-ci'];
 
 const getFunction = R.curry((moduleName, functionName) => ({
-  [functionName]: {
+  [kebabCase(functionName)]: {
     handler: `${moduleName}/${moduleName}.${functionName}`,
-    events: [{http: `POST ${functionName}`}]
+    events: [{http: `POST ${kebabCase(functionName)}`}]
   }
 }));
 
